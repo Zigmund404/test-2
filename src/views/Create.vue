@@ -1,3 +1,4 @@
+
 <template>
   <div class="home">
     <div class="dialog">
@@ -36,21 +37,22 @@
       </div>
       <div class="dialog-content" v-if="step === 3" >
          <b-form-group label="Want to share with others ?">
-          <b-form-radio-group v-model="selected"
+          <b-form-radio-group v-model="share"
           :options="options" ></b-form-radio-group>
          </b-form-group>
          
       </div>
       <div class="buttons-holder">
          <b-button @click="step -=1" v-if='step > 1'>
+           <font-awesome-icon icon="arrow-circle-left" />
             Prev
          </b-button>
          <div></div>
          <b-button @click="step +=1" v-if='step < 3'>
-            Next
+            Next <font-awesome-icon icon="arrow-circle-right" />
          </b-button >
-          <b-button @click="step +=1" v-if='step >= 3'>
-            Compete
+          <b-button @click="SaveDream" v-if='step >= 3'>
+            Complete <font-awesome-icon icon="check-circle" />
          </b-button >
 
       </div>
@@ -62,14 +64,14 @@
 </template>
 
 <script>
-
+import {mapActions} from 'vuex';
 
 export default {
   name: 'home',
  data() {
    return{
      step: 1,
-     text: '',
+     text:'',
      when:'',
      dreamPower: 5,
      whenOptions: [
@@ -77,18 +79,33 @@ export default {
           { value: 'afteramouth', text: 'After a mouth' },
           { value: 'afterayear', text: 'After a year' },
         ],
-         selected: '',
+         share: '',
         options: [
           { text: 'Yes', value: 'Yes' },
           { text: 'No', value: 'No' },
         ]
    }
- } 
+ } ,
+ 
+ methods:{
+   ...mapActions(['actionSaveDream',]),
+   SaveDream(){
+     const dream= {
+       text: this.text,
+       when: this.when,
+       dreamPower: this.dreamPower,
+       share: this.share
+     };
+     this.actionSaveDream(dream);
+     this.$router.push('/List');
+   }
+ }
 }
 </script>
 <style lang="scss" scoped>
 $dlg-color:rgb(224, 221, 221);
 .home{
+  background: rgba(gray,0.2);
   display: flex;
   justify-content: center;
   align-items: center;
